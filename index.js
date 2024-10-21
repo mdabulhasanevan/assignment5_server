@@ -86,7 +86,7 @@ app.get("/getcategory", async (req, res) => {
 
     // Product query
 
-    const productCollection = client.db("ProductDB").collection("Products");  
+const productCollection = client.db("ProductDB").collection("Products");  
 
 app.get("/getproduct", async (req, res) => {
   const query = productCollection.find();
@@ -108,6 +108,35 @@ app.get("/productadmin/:id", async (req, res) => {
   const result = await productCollection.findOne(query);
   console.log(result);
   res.send(result);
+}); 
+
+app.get("/productdetail/:id", async (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  const query = { _id: new ObjectId(id) };
+  const result = await productCollection.findOne(query);
+  console.log(result);
+  res.send(result);
+}); 
+
+app.get("/productlistbycategory/:id", async (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  
+  // Create the query object to find all products in the specified category
+  const query = { category: id };
+
+  try {
+    // Use find() to get all matching documents
+    const results = await productCollection.find(query).toArray();
+    console.log(results); 
+
+    // Send the array of results as the response
+    res.send(results); 
+  } catch (error) {
+    console.error("Error retrieving products:", error);
+    res.status(500).send("Error retrieving products");
+  }
 });
 
 app.delete("/productdelete/:id", async (req, res) => {
@@ -130,6 +159,9 @@ app.put("/productedit/:id", async (req, res) => {
     $set: {
       name: user.name,
       photo: user.photo, 
+      price: user.price,
+      rating: user.rating, 
+      discription: user.discription,
       category:user.category,
     },
   };
