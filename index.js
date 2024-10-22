@@ -176,61 +176,101 @@ app.put("/productedit/:id", async (req, res) => {
 
 
 //user
+// Fetch all users
+const userCollection = client.db("ProductDB").collection("user");
 
-    app.get("/users", async (req, res) => {
-      const query = userCollection.find();
-      const result = await query.toArray();
-      res.send(result);
-    });
+app.get("/users", async (req, res) => {
+  const query = userCollection.find();
+  const result = await query.toArray();
+  res.send(result);
+});
 
-    app.get("/user/:id", async (req, res) => {
-      const id = req.params.id;
-      console.log(id);
-      const query = { _id: new ObjectId(id) };
-      const result = await userCollection.findOne(query);
-      console.log(result);
-      res.send(result);
-    });
+// Fetch a user by Firebase uid
+app.get("/user/:uid", async (req, res) => {
+  const uid = req.params.uid;
+  const query = { uid: uid };
+  const result = await userCollection.findOne(query);
+  res.send(result);
+});
 
-    app.post("/users", async (req, res) => {
-      const users = req.body;
-      console.log(users);
-      const result = await userCollection.insertOne(users);
-      res.send(result);
-    });
+// Add a new user to the collection
+app.post("/users", async (req, res) => {
+  const user = req.body;
+  const result = await userCollection.insertOne(user);
+  res.send(result);
+});
 
-    app.put("/user/:id", async (req, res) => {
-      const id = req.params.id;
-      const user = req.body;
-      console.log(id, user);
+// Update user by id
+app.put("/user/:id", async (req, res) => {
+  const id = req.params.id;
+  const user = req.body;
+  const filter = { _id: new ObjectId(id) };
+  const option = { upsert: true };
+  console.log({ user });
+  const updatedUser = {
+    $set: {
+      displayName: user.displayName,
+      email: user.email,
+      phone: user.phone,
+      photoUrl: user.photoUrl,
+      address: user.address,
+      isAdmin: user.isAdmin,
+      isBlocked: user.isBlocked,
+    },
+  };
 
-      const filter = { _id: new ObjectId(id) };
-      const option = { upsert: true };
+  const result = await userCollection.updateOne(
+    filter,
+    updatedUser,
+    option
+  );
+  res.send(result);
+});
 
-      const updatedUser = {
-        $set: {
-          name: user.name,
-          email: user.email,
-        },
-      };
+// Delete user by id
+app.delete("/user/:id", async (req, res) => {
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) };
+  const result = await userCollection.deleteOne(query);
+  res.send(result);
+});
+// Messages Section
+// Create message
+app.post("/messages", async (req, res) => {
+  const { title, message, email } = req.body;
+  const messageCollection = client
+    .db("totTheMasterDB")
+    .collection("messages");
 
-      const result = await userCollection.updateOne(
-        filter,
-        updatedUser,
-        option
-      );
-      res.send(result);
-    });
+  const newMessage = {
+    title,
+    message,
+    email,
+    createdAt: new Date(),
+  };
 
-    app.delete("/user/:id", async (req, res) => {
-      const id = req.params.id;
-      console.log(id);
-      const query = { _id: new ObjectId(id) };
-      const result = await userCollection.deleteOne(query);
-      res.send(result);
-    });
-    
-
+  const result = await messageCollection.insertOne(newMessage);
+  res.send(result);
+});
+// Get all messages
+app.get("/messages", async (req, res) => {
+  const messageCollection = client
+    .db("totTheMasterDB")
+    .collection("messages");
+  const messages = await messageCollection.find().toArray();
+  res.send(messages);
+});
+// Get message by id
+app.get("/messages/:id", async (req, res) => {
+  const id = req.params.id;
+  const messageCollection = client
+    .db("totTheMasterDB")
+    .collection("messages");
+  const message = await messageCollection.findOne({
+    _id: new ObjectId(id),
+  });
+  res.send(message);
+});
 
 
 
