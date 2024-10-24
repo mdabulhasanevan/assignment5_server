@@ -84,6 +84,66 @@ app.get("/getcategory", async (req, res) => {
       res.send(result);
     });
 
+    //customer product purchase query
+    const productPurchaseCollection = client.db("ProductDB").collection("userPurchaseCollecting");
+
+    app.get("/CustomerPurchaseHistorySelf/:id", async (req, res) => {  //for customer self orderd list
+      
+      const id = req.params.id;
+      console.log(id);
+      const query = { customerid : id };
+      const result = await productPurchaseCollection.find(query).toArray();
+       
+      res.send(result); 
+    }); 
+
+   
+    app.post("/addCustomerPurchase", async (req, res) => {
+      const product = req.body;
+      console.log(product);
+      const result = await productPurchaseCollection.insertOne(product);
+      res.send(result);
+    });
+
+
+
+    app.get("/getCustomerPurchase", async (req, res) => {
+      const query = productPurchaseCollection.find();
+      const result = await query.toArray();
+      res.send(result);
+    }); 
+
+    app.delete("/deleteCustomerPurchase/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const result = await productPurchaseCollection.deleteOne(query); 
+      res.send(result); 
+    });
+
+    app.put("/paymentCustomerPurchase/:id", async (req, res) => { 
+      const id = req.params.id;
+      const user = req.body;
+      console.log(id, user);
+    
+      const filter = { _id: new ObjectId(id) };
+      const option = { upsert: true };
+    
+      const updatedUser = {
+        $set: {
+          paymentstatus: user.paymentstatus,
+          
+        },
+      };
+      const result = await productPurchaseCollection.updateOne(
+          filter,
+          updatedUser,
+          option
+        );
+        res.send(result);
+        console.log(result);
+      });
+
     // Product query
 
 const productCollection = client.db("ProductDB").collection("Products");  
