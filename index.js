@@ -282,7 +282,7 @@ app.put("/productedit/:id", async (req, res) => {
   const filter = { _id: new ObjectId(id) };
   const option = { upsert: true };
 
-  const updatedUser = {
+  const updatedUser = { 
     $set: {
       name: user.name,
       photo: user.photo, 
