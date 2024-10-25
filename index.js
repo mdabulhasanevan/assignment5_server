@@ -83,18 +83,45 @@ app.get("/getcategory", async (req, res) => {
       );
       res.send(result);
     });
-
-    //customer product purchase query
+ 
+    //customer product purchase query self history user
     const productPurchaseCollection = client.db("ProductDB").collection("userPurchaseCollecting");
 
     app.get("/CustomerPurchaseHistorySelf/:id", async (req, res) => {  //for customer self orderd list
+     
+      const id = req.params.id; // Get the customer ID from the request parameters
+console.log(id);
+
+try {
+  const query = await productPurchaseCollection.aggregate([
+    {
+      $addFields: {
+        category: { $toObjectId: "$category" } // Convert category to ObjectId
+      }
+    },
+    { 
+      $match: {
+        customerid: id // Filter by customerid
+      } 
+    },
+    {
+      $lookup: {
+        from: 'Category', 
+        localField: 'category', // the field in productPurchaseCollection
+        foreignField: '_id',     // the field in Category collection
+        as: 'categoryDetails'     // array of matched categories
+      }
+    },
+    
+  ]).toArray();
+
+  res.send(query);
+  console.log(query);
+} catch (error) {
+  res.status(500).send({ error: "Failed to fetch products" });
+}
+
       
-      const id = req.params.id;
-      console.log(id);
-      const query = { customerid : id };
-      const result = await productPurchaseCollection.find(query).toArray();
-       
-      res.send(result); 
     }); 
 
    
@@ -108,9 +135,30 @@ app.get("/getcategory", async (req, res) => {
 
 
     app.get("/getCustomerPurchase", async (req, res) => {
-      const query = productPurchaseCollection.find();
-      const result = await query.toArray();
-      res.send(result);
+      try {
+        const query = await productPurchaseCollection.aggregate([
+          {
+            $addFields: {
+              category: { $toObjectId: "$category" } // Convert category to ObjectId
+            }
+          },
+          
+          {
+            $lookup: {
+              from: 'Category', 
+              localField: 'category', // the field in productPurchaseCollection
+              foreignField: '_id',     // the field in Category collection
+              as: 'categoryDetails'     // array of matched categories
+            }
+          },
+          
+        ]).toArray();
+      
+        res.send(query);
+        console.log(query);
+      } catch (error) {
+        res.status(500).send({ error: "Failed to fetch products" });
+      }
     }); 
 
     app.delete("/deleteCustomerPurchase/:id", async (req, res) => {
@@ -149,10 +197,29 @@ app.get("/getcategory", async (req, res) => {
 const productCollection = client.db("ProductDB").collection("Products");  
 
 app.get("/getproduct", async (req, res) => {
-  const query = productCollection.find();
-  const result = await query.toArray();
-  res.send(result);
-}); 
+  try {
+    const query = await productCollection.aggregate([
+      {
+        $addFields: {
+          category: { $toObjectId: "$category" } // Convert category to ObjectId
+        }
+      },
+      {
+        $lookup: {
+          from: 'Category', 
+          localField: 'category', // the field in productCollection
+          foreignField: '_id',    // the field in Category collection
+          as: 'categoryName' 
+        } 
+      }
+    ]).toArray();
+    res.send(query);
+    //console.log(query);
+  } catch (error) {
+    res.status(500).send({ error: "Failed to fetch products" });
+  }
+});
+
 
 app.post("/addproduct", async (req, res) => {
   const product = req.body;
