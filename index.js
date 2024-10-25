@@ -87,7 +87,7 @@ app.get("/getcategory", async (req, res) => {
     //customer product purchase query self history user
     const productPurchaseCollection = client.db("ProductDB").collection("userPurchaseCollecting");
 
-    app.get("/CustomerPurchaseHistorySelf/:id", async (req, res) => {  //for customer self orderd list
+app.get("/CustomerPurchaseHistorySelf/:id", async (req, res) => {  //for customer self orderd list
      
       const id = req.params.id; // Get the customer ID from the request parameters
 console.log(id);
@@ -196,6 +196,7 @@ try {
 
 const productCollection = client.db("ProductDB").collection("Products");  
 
+//user for home page and backend
 app.get("/getproduct", async (req, res) => {
   try {
     const query = await productCollection.aggregate([
@@ -209,7 +210,7 @@ app.get("/getproduct", async (req, res) => {
           from: 'Category', 
           localField: 'category', // the field in productCollection
           foreignField: '_id',    // the field in Category collection
-          as: 'categoryName' 
+          as: 'categoryTable' 
         } 
       }
     ]).toArray();
@@ -218,6 +219,7 @@ app.get("/getproduct", async (req, res) => {
   } catch (error) {
     res.status(500).send({ error: "Failed to fetch products" });
   }
+  
 });
 
 
@@ -249,20 +251,32 @@ app.get("/productdetail/:id", async (req, res) => {
 app.get("/productlistbycategory/:id", async (req, res) => {
   const id = req.params.id;
   console.log(id);
-  
-  // Create the query object to find all products in the specified category
-  const query = { category: id };
 
   try {
-    // Use find() to get all matching documents
-    const results = await productCollection.find(query).toArray();
-    console.log(results); 
-
-    // Send the array of results as the response
-    res.send(results); 
+    const query = await productCollection.aggregate([
+      { 
+        $match: {
+          category: id // Filter by category
+        } 
+      },
+      {
+        $addFields: {
+          category: { $toObjectId: "$category" } // Convert category to ObjectId
+        }
+      },
+      {
+        $lookup: {
+          from: 'Category', 
+          localField: 'category', // the field in productCollection
+          foreignField: '_id',    // the field in Category collection
+          as: 'categoryTable' 
+        } 
+      }
+    ]).toArray();
+    res.send(query);
+    //console.log(query);
   } catch (error) {
-    console.error("Error retrieving products:", error);
-    res.status(500).send("Error retrieving products");
+    res.status(500).send({ error: "Failed to fetch products" });
   }
 });
 
@@ -282,7 +296,7 @@ app.put("/productedit/:id", async (req, res) => {
   const filter = { _id: new ObjectId(id) };
   const option = { upsert: true };
 
-  const updatedUser = { 
+  const updatedUser = {
     $set: {
       name: user.name,
       photo: user.photo, 
