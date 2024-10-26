@@ -15,7 +15,7 @@ app.use(express.json());
 //const uri = `mongodb+srv://${process.env.USER_ID}:${process.env.USER_SECRET}@cluster0.1kugq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 const uri = `mongodb+srv://bootcamp_db_user:ZAQ!2wsx@cluster0.1kugq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
- 
+  
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -432,9 +432,9 @@ run().catch((error)=>{
 
 
 app.get('/', (req,res)=>{
-    res.send("Server assignment 5 running");
+    res.send("Server 2024 assignment 5 running");
 });
 
 app.listen(port,()=>{
-    console.log("Server assignment 5 running")
+    console.log("Server 2024 assignment 5 running")
 });
