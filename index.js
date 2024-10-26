@@ -44,23 +44,23 @@ app.get("/getcategory", async (req, res) => {
 
   app.post("/addcategory", async (req, res) => {
     const category = req.body;
-    console.log(category);
+    //console.log(category);
     const result = await categoryCollection.insertOne(category);
     res.send(result);
   });
 
   app.get("/categoryadmin/:id", async (req, res) => {
     const id = req.params.id;
-    console.log(id);
+    //console.log(id);
     const query = { _id: new ObjectId(id) };
     const result = await categoryCollection.findOne(query);
-    console.log(result);
+    //console.log(result);
     res.send(result);
   });
 
   app.delete("/categorydelete/:id", async (req, res) => {
     const id = req.params.id;
-    console.log(id);
+    //console.log(id);
     const query = { _id: new ObjectId(id) };
     const result = await categoryCollection.deleteOne(query); 
     res.send(result); 
@@ -69,7 +69,7 @@ app.get("/getcategory", async (req, res) => {
   app.put("/categoryedit/:id", async (req, res) => { 
     const id = req.params.id;
     const user = req.body;
-    console.log(id, user);
+    //console.log(id, user);
 
     const filter = { _id: new ObjectId(id) };
     const option = { upsert: true };
@@ -94,7 +94,7 @@ app.get("/getcategory", async (req, res) => {
 app.get("/CustomerPurchaseHistorySelf/:id", async (req, res) => {  //for customer self orderd list
      
       const id = req.params.id; // Get the customer ID from the request parameters
-console.log(id);
+//console.log(id);
 
 try {
   const query = await productPurchaseCollection.aggregate([
@@ -120,7 +120,7 @@ try {
   ]).toArray();
 
   res.send(query);
-  console.log(query);
+  //console.log(query);
 } catch (error) {
   res.status(500).send({ error: "Failed to fetch products" });
 }
@@ -131,7 +131,7 @@ try {
    
     app.post("/addCustomerPurchase", async (req, res) => {
       const product = req.body;
-      console.log(product);
+      //console.log(product);
       const result = await productPurchaseCollection.insertOne(product);
       res.send(result);
     });
@@ -159,7 +159,7 @@ try {
         ]).toArray();
       
         res.send(query);
-        console.log(query);
+        //console.log(query);
       } catch (error) {
         res.status(500).send({ error: "Failed to fetch products" });
       }
@@ -167,7 +167,7 @@ try {
 
     app.delete("/deleteCustomerPurchase/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
+      //console.log(id);
       const query = { _id: new ObjectId(id) };
       const result = await productPurchaseCollection.deleteOne(query); 
       res.send(result); 
@@ -176,7 +176,7 @@ try {
     app.put("/paymentCustomerPurchase/:id", async (req, res) => { 
       const id = req.params.id;
       const user = req.body;
-      console.log(id, user);
+      //console.log(id, user);
     
       const filter = { _id: new ObjectId(id) };
       const option = { upsert: true };
@@ -193,7 +193,7 @@ try {
           option
         );
         res.send(result);
-        console.log(result);
+        //console.log(result);
       });
 
     // Product query
@@ -219,7 +219,7 @@ app.get("/getproduct", async (req, res) => {
       }
     ]).toArray();
     res.send(query);
-    //console.log(query);
+    ////console.log(query);
   } catch (error) {
     res.status(500).send({ error: "Failed to fetch products" });
   }
@@ -229,32 +229,32 @@ app.get("/getproduct", async (req, res) => {
 
 app.post("/addproduct", async (req, res) => {
   const product = req.body;
-  console.log(product);
+  //console.log(product);
   const result = await productCollection.insertOne(product);
   res.send(result);
 });
 
 app.get("/productadmin/:id", async (req, res) => {
   const id = req.params.id;
-  console.log(id);
+  //console.log(id);
   const query = { _id: new ObjectId(id) };
   const result = await productCollection.findOne(query);
-  console.log(result);
+  //console.log(result);
   res.send(result);
 }); 
 
 app.get("/productdetail/:id", async (req, res) => {
   const id = req.params.id;
-  console.log(id);
+  //console.log(id);
   const query = { _id: new ObjectId(id) };
   const result = await productCollection.findOne(query);
-  console.log(result);
+  //console.log(result);
   res.send(result);
 }); 
 
 app.get("/productlistbycategory/:id", async (req, res) => {
   const id = req.params.id;
-  console.log(id);
+  //console.log(id);
 
   try {
     const query = await productCollection.aggregate([
@@ -278,7 +278,7 @@ app.get("/productlistbycategory/:id", async (req, res) => {
       }
     ]).toArray();
     res.send(query);
-    //console.log(query);
+    //////console.log(query);
   } catch (error) {
     res.status(500).send({ error: "Failed to fetch products" });
   }
@@ -286,7 +286,7 @@ app.get("/productlistbycategory/:id", async (req, res) => {
 
 app.delete("/productdelete/:id", async (req, res) => {
   const id = req.params.id;
-  console.log(id);
+ // ////console.log(id);
   const query = { _id: new ObjectId(id) };
   const result = await productCollection.deleteOne(query); 
   res.send(result); 
@@ -295,7 +295,7 @@ app.delete("/productdelete/:id", async (req, res) => {
 app.put("/productedit/:id", async (req, res) => { 
   const id = req.params.id;
   const user = req.body;
-  console.log(id, user);
+ // ////console.log(id, user);
 
   const filter = { _id: new ObjectId(id) };
   const option = { upsert: true };
@@ -351,7 +351,7 @@ app.put("/user/:id", async (req, res) => {
   const user = req.body;
   const filter = { _id: new ObjectId(id) };
   const option = { upsert: true };
-  console.log({ user });
+ ////console.log ({ user });
   const updatedUser = {
     $set: {
       displayName: user.displayName,
@@ -420,15 +420,15 @@ app.get("/messages/:id", async (req, res) => {
 
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+   // await client.db("admin").command({ ping: 1 });
+    ////console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
     //await client.close();
   }
 }
 run().catch((error)=>{
-    console.log(error);
+    //console.log(error);
 });
 
 
@@ -437,5 +437,5 @@ app.get('/', (req,res)=>{
 });
 
 app.listen(port,()=>{
-    console.log("Server 2024 assignment 5 running")
+    //console.log("Server 2024 assignment 5 running")
 });
