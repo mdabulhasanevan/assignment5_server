@@ -12,9 +12,9 @@ app.use(cors());
 app.use(express.json());
 
 
-//const uri = `mongodb+srv://${process.env.USER_ID}:${process.env.USER_SECRET}@cluster0.1kugq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = `mongodb+srv://${process.env.USER_ID}:${process.env.USER_SECRET}@cluster0.1kugq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
-const uri = `mongodb+srv://bootcamp_db_user:ZAQ!2wsx@cluster0.1kugq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+//const uri = `mongodb+srv://bootcamp_db_user:ZAQ!2wsx@cluster0.1kugq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
   
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
