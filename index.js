@@ -296,9 +296,9 @@ async function run() {
     
         // Send the first item in the array (single product with category details)
         res.send(query[0]);
-        console.log("test")
+       // console.log("test")
       } catch (error) {
-        console.error("Error fetching product details:", error);
+     //   console.error("Error fetching product details:", error);
         res.status(500).send({ error: "Failed to fetch product details" });
       }
     });
